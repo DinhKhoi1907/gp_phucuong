@@ -59,8 +59,7 @@ class ThanhController extends ApiController
                     'id' => (int)$info->id,
                     'name'           => $info->name,
                     'latin' => $info->latin,
-                    'bon_mang_ngay'         => $info->bon_mang_ngay,
-                    'bon_mang_thang'         => $info->bon_mang_thang,
+                    'bon_mang'         => $info->bon_mang,
                     'ghi_chu'          => $info->ghi_chu,
                     'cuoc_doi'    => $info->cuoc_doi,
                     'active'     => $info->active,
@@ -146,10 +145,10 @@ class ThanhController extends ApiController
     {
         try {
             $model = $this->thanhSv->apiGetDetail($id);
+            $model->forceDelete();
         } catch (HandlerMsgCommon $e) {
             throw $e->render();
         }
-        $this->thanhSv->deleteInformation($model);
 
         return $this->respondDeleted("{$this->resourceName} deleted.");
     }
@@ -162,7 +161,8 @@ class ThanhController extends ApiController
     private function __handleStore(&$request)
     {
         $formData = $request->all();
-        if ($result = $this->thanhSv->apiInsertOrUpdate($formData)) {
+
+        if ($result = $this->thanhSv->apiInsert($formData)) {
             return $this->respondUpdated($result);
         }
 

@@ -282,27 +282,6 @@ final class LinhMucService implements BaseModel, LinhMucModel
         }
     }
 
-    public function deleteInformation($model = null) {
-        DB::beginTransaction();
-      try {
-        $id = $model->id;
-        $this->_deleteById($id);
-        DB::commit();
-      } catch (\Exceptions $e) {
-        DB::rollBack();
-        throw $e;
-        return false;
-      }
-    }
-
-    private function _deleteById($id)
-    {      
-      Linhmuc::fcDeleteById($id);
-      LinhmucBangcap::fcDeleteByLinhmucId($id);
-      LinhmucChucthanh::fcDeleteByLinhmucId($id);
-      LinhmucThuyenchuyen::fcDeleteByLinhmucId($id);
-    }
-
 		private function _removeThuyenChuyen($linhmucId, $model)
     {
         LinhmucThuyenChuyen::fcDeleteByLinhmucThuyenChuyenId($linhmucId, $model['id']);
@@ -314,6 +293,7 @@ final class LinhMucService implements BaseModel, LinhMucModel
          * Save user with transaction to make sure all data stored correctly
          */
         DB::beginTransaction();
+        
         if ($data['action'] == 'add.bo.nhiem') {
             $this->_addBoNhiem($data['id'], $data['bo_nhiem']);
         } elseif ($data['action'] == 'add.lm.thuyen.chuyen') {
@@ -380,8 +360,8 @@ final class LinhMucService implements BaseModel, LinhMucModel
     {
         $model = new CoSoGiaoPhan();
         $query = $model->select()
-            ->where('coso_giaophan', '=', 1)
             ->orderBy('name', 'DESC');
+
         return $query->get();
     }
 
@@ -409,17 +389,6 @@ final class LinhMucService implements BaseModel, LinhMucModel
         $query = $model->select()
 						->where('active', 1)
             ->orderBy('ten', 'DESC');
-
-        return $query->get();
-    }
-
-    public function apiGetCongDoanNgoaiGiaoPhanList($data = [])
-    {
-        $model = new CoSoGiaoPhan();
-        $query = $model->select()
-        ->where('active', 1)
-        ->where('coso_giaophan', '=', 0)
-        ->orderBy('name', 'DESC');
 
         return $query->get();
     }

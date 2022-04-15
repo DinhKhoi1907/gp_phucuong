@@ -62,7 +62,7 @@ export const pluginConfig = {
   carouselLimit: 5,
   chucThanhs: ['--Chọn chức thánh--', 'Phó Tế', 'Linh Mục', 'Giám Mục'],
   loaiChucVus: ['Thuyên chuyển', 'Bổ nhiệm khác', 'Khác'],
-  loaiDiaDiems: ['', 'Giáo Xứ', 'Cơ Sở Giáo Phận', 'Dòng', 'Ban Chuyên Trách', 'Cơ sở ngoài giáo phận'],
+  loaiDiaDiems: ['', 'Giáo Xứ', 'Cơ Sở Giáo Phận', 'Dòng', 'Ban Chuyên Trách'],
   trieuDongs: ['Tu Triều', 'Tu Dòng'],
   sortIcon: {
     is: 'glyphicon-sort',

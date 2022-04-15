@@ -19,7 +19,6 @@ import {
   ACTION_RELOAD_GET_INFO_LIST,
   ACTION_INSERT_INFO_BACK,
   ACTION_SET_IMAGE,
-  ACTION_RESET_NOTIFICATION_INFO,
 } from '../types/action-types'
 
 const defaultState = () => {
@@ -75,8 +74,8 @@ export default {
     loading(state) {
       return state.loading
     },
-    insertSuccess(state) {
-      return state.insertSuccess
+    updateSuccess(state) {
+      return state.updateSuccess
     },
     errors(state) {
       return state.errors
@@ -100,11 +99,11 @@ export default {
     },
 
     [INFOS_MODAL_INSERT_INFO_SUCCESS](state, payload) {
-      state.insertSuccess = payload
+      state.updateSuccess = payload
     },
 
     [INFOS_MODAL_INSERT_INFO_FAILED](state, payload) {
-      state.insertSuccess = payload
+      state.updateSuccess = payload
     },
 
     [INFOS_MODAL_SET_ERROR](state, payload) {
@@ -143,6 +142,7 @@ export default {
               INFOS_MODAL_INSERT_INFO_SUCCESS,
               AppConfig.comInsertNoSuccess
             )
+            commit(INFOS_MODAL_SET_ERROR, [])
           }
           dispatch(ACTION_SET_LOADING, false)
         },
@@ -190,10 +190,6 @@ export default {
 
     [ACTION_SET_IMAGE]({ commit, }, imgFile) {
       commit(INFOS_FORM_SET_MAIN_IMAGE, imgFile)
-    },
-
-    [ACTION_RESET_NOTIFICATION_INFO]({ commit, }, values) {
-      commit(INFOS_MODAL_INSERT_INFO_SUCCESS, values)
     },
   },
 }

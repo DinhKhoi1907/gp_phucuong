@@ -22,20 +22,21 @@
                   <table class="table table-bordered table-hover">
                     <thead>
                       <tr role="row">
-                        <th style="width: 5%" class="text-left">No</th>
-                        <!-- <th style="width: 1px" class="text-center">
+                        <th style="width: 1px" class="text-left">No</th>
+                        <th style="width: 1px" class="text-center">
                           <input
                             type="checkbox"
                             onclick="$('input[name*=\'selected\']').prop('checked', this.checked);"
                           />
-                        </th> -->
-                        <th style="width: 10%" class="text-left">Tên</th>
-                        <th style="width: 25%" class="text-left">Địa chỉ</th>
-                        <th style="witdh: 15%" class="text-center">Email</th>
-                        <th style="witdh: 15%" class="text-center">Diện thoại</th>
-                        <th style="witdh: 15%" class="text-center">Fax</th>
-                        <th style="witdh: 10%" class="text-center">Website</th>
-                        <th style="width: 5%" class="text-right">Action</th>
+                        </th>
+                        <th style="width: 200px" class="text-left">Tên</th>
+                        <th style="width: 100px" class="text-left">Địa chỉ</th>
+                        <th>Email</th>
+                        <th>Diện thoại</th>
+                        <th>Fax</th>
+                        <th>Website</th>
+                        <th class="text-center">Trạng thái</th>
+                        <th style="width: 100px" class="text-right">Action</th>
                       </tr>
                     </thead>
                     <tbody>
@@ -61,7 +62,7 @@
         @update-info-success="_updateInfoList"
       ></the-modal-edit>
     </modal>
-    <the-modal-add @add-info-success="_addInfoList"></the-modal-add>
+    <the-modal-add></the-modal-add>
   </div>
 </template>
 
@@ -105,7 +106,6 @@ export default {
   computed: {
     ...mapState({
       perPage: state => state.cfApp.perPage,
-      rootData: (state) => state.cfApp,
     }),
     ...mapGetters(['isNotEmptyList']),
     ...mapState(MODULE_MODULE_CO_SO, ['infos', 'loading', 'isDelete']),
@@ -124,19 +124,11 @@ export default {
     _showModalAdd() {
       this.$modal.show('modal-co-so-add')
     },
-    _addInfoList() {
-      this.$modal.hide('modal-co-so-add')
-      const params = {
-        ...this.rootData.searchs,
-        perPage: this.rootData.perPage
-      }
-      this[ACTION_GET_INFO_LIST](params)
-    },
     _showModalEdit() {
       this.$modal.show('modal-co-so-edit')
     },
     _updateInfoList() {
-      this.$modal.hide('modal-co-so-edit')
+      this.$modal.hide('modal-cong-doan-tu-si-edit')
     },
     _notificationUpdate(notification) {
       this.$notify(notification)
@@ -150,7 +142,7 @@ export default {
     this[ACTION_GET_INFO_LIST](params)
   },
   setting: {
-    list_title: 'Danh sách cơ sở',
+    list_title: 'Danh sách Linh mục',
   },
 }
 </script>

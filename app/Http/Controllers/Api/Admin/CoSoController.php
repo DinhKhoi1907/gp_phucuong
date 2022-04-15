@@ -65,8 +65,7 @@ class CoSoController extends ApiController
                     'fax'    => $info->fax,
                     'website'    => $info->website,
                     'active'     => $info->active,
-                    'active_text' => $info->active?'Xảy ra':'Ẩn',
-                    'coso_giaophan_text' => $info->coso_giaophan ? 'Trong giáo phận' : 'Ngoài giáo phận'
+                    'active_text' => $info->active?'Xảy ra':'Ẩn'
                 ];
             }
 
@@ -165,7 +164,7 @@ class CoSoController extends ApiController
     {
         $formData = $request->all();
 
-        if ($result = $this->cosoSv->apiInsertOrUpdate($formData)) {
+        if ($result = $this->cosoSv->apiInsert($formData)) {
             return $this->respondUpdated($result);
         }
 

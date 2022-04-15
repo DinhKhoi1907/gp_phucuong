@@ -136,6 +136,17 @@
             </validation-provider>
           </div>
         </div>
+        <div class="form-group">
+          <label for="input-info-name" class="col-sm-2 control-label"
+            >Trạng thái</label
+          >
+          <div class="col-sm-10">
+            <select class="form-control" v-model="info.active">
+              <option value="1" :selected="info.active == 1">Xảy ra</option>
+              <option value="0" :selected="info.active == 0">Ẩn</option>
+            </select>
+          </div>
+        </div>
       </form>
     </div>
     <div class="container-fluid">
@@ -199,6 +210,8 @@ export default {
     },
     _submitUpdate() {
       this[ACTION_UPDATE_INFO](this.info)
+      
+      return 0
     },
     _notificationUpdate(notification) {
       if (notification.type == 'success') {

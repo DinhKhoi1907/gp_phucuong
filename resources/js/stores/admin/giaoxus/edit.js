@@ -50,6 +50,7 @@ const defaultState = () => {
       type: 'giaoxu',
       update_user: 0,
       giaohat_id: null,
+      thuyen_chuyens: [],
     },
     thuyenChuyen: null,
     listGiaoHat: [],
@@ -71,7 +72,7 @@ const defaultState = () => {
 			label_from_date: '',
 			label_to_date: '',
 			from_date: '',
-      to_date: '',
+			to_date: ''
 		},
 		insertSuccess: false,
   }
@@ -225,11 +226,12 @@ export default {
 
     // UPDATE GIAO XU 
     [ACTION_UPDATE_INFO]({ commit, }, info) {
+      commit(INFOS_MODAL_UPDATE_INFO_SUCCESS, '')
       apiUpdateInfo(
         info,
         (result) => {
-          console.log('true')
           if (result) {
+            commit(SET_ERROR, [])
             commit(
               INFOS_MODAL_UPDATE_INFO_SUCCESS,
               AppConfig.comUpdateNoSuccess
@@ -237,7 +239,6 @@ export default {
           }
         },
         (errors) => {
-          console.log('false');
           commit(
             INFOS_MODAL_UPDATE_INFO_FAILED,
             AppConfig.comUpdateNoFail

@@ -152,13 +152,6 @@ class Linhmuc extends BaseModel
         return $value;
     }
 
-    public function getTenCongDoanNgoaiAttribute($value)
-    {
-      $value = ($this->dong) ? $this->dong->name : '';
-
-      return $value;
-    }
-
     public function getTenRipGiaoXuAttribute($value)
     {
         $value = ($this->ripGiaoXu) ? $this->ripGiaoXu->name : '';
@@ -259,8 +252,6 @@ class Linhmuc extends BaseModel
                     'dongName' => $thuyenChuyen->ten_dong,
                     'ban_chuyen_trach_id' => $thuyenChuyen->ban_chuyen_trach_id,
                     'banchuyentrachName' => $thuyenChuyen->ten_ban_chuyen_trach,
-                    'cong_doan_ngoai_id' => $thuyenChuyen->cong_doan_ngoai_id,
-                    'congdoanngoaiName' => $thuyenChuyen->ten_cong_doan_ngoai,
                     'du_hoc' => $thuyenChuyen->du_hoc,
                     'quoc_gia' => $thuyenChuyen->quoc_gia,
                     'ghi_chu' => $thuyenChuyen->ghi_chu,
@@ -325,10 +316,5 @@ class Linhmuc extends BaseModel
 
     public function scopeName($query, $request) {
       return  $query->where('ten', 'LIKE', '%' . $request->input('query') . '%');
-    }
-
-    public function fcDeleteById($id) {
-        DB::delete("delete from `" . Tables::$linhmucs . "` where id = '" . (int)$id . "'");
-    }
-
+  }
 }

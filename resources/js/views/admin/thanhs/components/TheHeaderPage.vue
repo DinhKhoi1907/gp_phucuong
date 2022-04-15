@@ -49,7 +49,7 @@ import { mapState, mapActions, } from 'vuex'
 import Perpage from 'com@admin/Pagination/SelectPerpage'
 import ListSearch from 'com@admin/Search'
 import Breadcrumb from 'com@admin/Breadcrumb'
-import { MODULE_MODULE_THANH, } from 'store@admin/types/module-types'
+import { MODULE_MODULE_GIAO_PHAN, } from 'store@admin/types/module-types'
 import { ACTION_GET_INFO_LIST, } from 'store@admin/types/action-types'
 
 export default {
@@ -65,7 +65,7 @@ export default {
     }),
   },
   methods: {
-    ...mapActions(MODULE_MODULE_THANH, {
+    ...mapActions(MODULE_MODULE_GIAO_PHAN, {
       getInfoList: ACTION_GET_INFO_LIST,
     }),
     _showModal() {
@@ -76,7 +76,7 @@ export default {
     },
   },
   setting: {
-    title: 'Thánh',
+    title: 'Linh mục',
     refresh_txt: 'Tải lại danh sách',
   },
 }
