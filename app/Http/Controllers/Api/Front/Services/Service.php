@@ -593,7 +593,7 @@ class Service implements BaseModel
             )->whereIn('giao_xu_id', $list_id_giaoxu);
           }
         )->orderBy('id', 'ASC')->paginate(5);
-			} else {
+			} else if($request->input('id_chucvu') && $request->input('id_giaohat')){
         $list_id_giaoxu = $this->modelPhanHatXu->where('giao_hat_id', $request->input('id_giaohat'))->pluck('giao_xu_id')->toArray();
         $list_linhmucs = $this->modelLinhMuc->name($query)->whereHas(
           'thuyenChuyens',
@@ -607,7 +607,9 @@ class Service implements BaseModel
             )->whereIn('giao_xu_id', $list_id_giaoxu)->where('chuc_vu_id', $request->input('id_chucvu'));
           }
         )->orderBy('id', 'ASC')->paginate(5);
-			}
+			}else {
+        $list_linhmucs = $this->modelLinhMuc->name($query)->orderBy('id', 'ASC')->paginate(5);
+      }
 		}
 		return $list_linhmucs;
 	}
