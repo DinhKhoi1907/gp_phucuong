@@ -59,6 +59,7 @@ class Service implements BaseModel
     $this->modelLinhmucTemp = new LinhmucTemp();
     $this->modelThuyenChuyen = new LinhmucThuyenchuyen();
     $this->modelThuyenChuyenTemp = new LinhmucThuyenchuyenTemp();
+<<<<<<< HEAD
   }
 
   /**
@@ -274,6 +275,223 @@ class Service implements BaseModel
       ->leftJoin(Tables::$giao_hats, Tables::$giao_xus . '.giao_hat_id', '=', Tables::$giao_hats . '.id')
       ->leftJoin(
         DB::raw("(select `t1`.`id`, `t1`.`linh_muc_id`, `t1`.`chuc_thanh_id`, `t1`.`ngay_thang_nam_chuc_thanh`
+=======
+	}
+
+	/**
+	 * @author: dtphi .
+	 * @param array $options
+	 * @param int $limit
+	 * @return AdminCollection
+	 */
+	public function apiGetList(array $options = [], $limit = 15)
+	{
+	}
+
+	/**
+	 * author : dtphi .
+	 * @param array $options
+	 * @param int $limit
+	 * @return InformationCollection
+	 */
+	public function apiGetResourceCollection(array $options = [], $limit = 15)
+	{
+		// TODO: Implement apiGetResourceCollection() method.
+	}
+
+	/**
+	 * @author : dtphi .
+	 * @return array
+	 */
+	public function apiGetNewsGroupTrees()
+	{
+		// TODO: Implement apiGetNewsGroupTrees() method.
+		$query = $this->modelNewGroup
+			->select('id', 'father_id', 'newsgroupname', 'displays', 'sort')
+			->orderBySortAsc();
+
+		return [
+			'total' => $query->count(),
+			'data'  => $query->get()->toArray()
+		];
+	}
+
+	public function getMenuCategories($parentId = 0)
+	{
+		$query = $this->modelNewGroup->select()
+			->lfJoinDescription()
+			->filterParentId($parentId)
+			->filterActiveStatus()
+			->orderByAscSort()
+			->orderByAscParentId();
+
+		return $query->get();
+	}
+
+	public function apiGetCategoryById($categoryId = 0)
+	{
+		$query = $this->modelNewGroup->select()
+			->lfJoinDescription()
+			->filterById($categoryId)
+			->filterActiveStatus();
+
+		return $query->first();
+	}
+
+	public function apiGetMenuCategoryIds($parentId = 0)
+	{
+		$query = DB::table('pc_categorys')->select('category_id')
+			->where('pc_categorys.parent_id', (int)$parentId)
+			->where('pc_categorys.status', '1');
+
+		return $query->get()->toArray();
+	}
+
+	public function getMenuCategoriesToLayout($layoutId = 1)
+	{
+		$query = $this->modelNewGroup->select()
+			->lfJoinDescription()
+			->lfJoinToLayout()
+			->filterLayoutId($layoutId)
+			->filterActiveStatus()
+			->orderByAscSort()
+			->orderByAscParentId();
+
+		return $query->get();
+	}
+
+	public function apiGetLatestInfos($limit = 5)
+	{
+		$query = $this->modelInfo->select('information_id')
+			->orderByDescDateAvailable()
+			->limit($limit);
+
+		return $query->get();
+	}
+
+	public function apiGetPopularInfos($limit = 5)
+	{
+		$query = $this->modelInfo->select('information_id')
+			->orderByDescViewed()
+			->limit($limit);
+
+		return $query->get();
+	}
+
+	public function apiGetInfoListByIds($data = array())
+	{
+		$infoType = 1;
+		if (isset($data['infoType'])) {
+			$infoType = (int)$data['infoType'];
+		}
+
+		$query = DB::table(Tables::$informations)->select(
+			[
+				'date_available',
+				'sort_description',
+				'image',
+				Tables::$informations . '.information_id',
+				'information_type',
+				'name',
+				'name_slug',
+				'viewed',
+				'vote',
+				'tag'
+			]
+		)
+			->leftJoin(
+				Tables::$information_descriptions,
+				Tables::$informations . '.information_id',
+				'=',
+				Tables::$information_descriptions . '.information_id'
+			)
+			->where('status', '=', '1')
+			->where('information_type', '=', $infoType);
+
+		if (isset($data['information_ids'])) {
+			$query->whereIn(Tables::$informations . '.information_id', $data['information_ids']);
+		}
+
+		$limit = 20;
+		if (isset($data['limit'])) {
+			$limit = (int)$data['limit'];
+		}
+
+		$query->orderByDesc('sort_order');
+		$query->orderByDesc('date_available');
+
+		return $query->get();
+	}
+
+	public function apiGetNgayLeList($data = array(), $limit = 10)
+	{
+		$query = $this->modelNgayLe	
+			->whereNotNull('hanh',)->Where('hanh', '!=', '')
+			->where('solar_day','!=', 0)
+			->where('solar_month','!=', 0);
+		return $query->paginate($limit);
+	}
+
+	public function apiGetDetailNgayLe($id = null)
+	{
+		return NgayLe::findOrFail($id);
+	}
+
+	public function apiGetGiaoXuList($data = array(), $limit = 5)
+	{
+		$query = $this->modelGiaoXu->with(['linhmucthuyenchuyens' => function ($q) {
+			$q->where('chuc_vu_active', 1)->select('linh_muc_id', 'chuc_vu_id', 'giao_xu_id')->with('linhMuc', 'chucVu')->orderBy('chuc_vu_id', 'asc');
+		}]);
+
+		return $query->paginate($limit);
+	}
+
+	public function apiGetDetailGiaoXu($id)
+	{
+		return GiaoXu::findOrFail($id);
+	}
+
+	public function apiGetLinhMucListByGiaoXuId($giaoXuId = null)
+	{
+		$linhMucs = LinhmucThuyenchuyen::where(Tables::$linhmuc_thuyenchuyens . '.giao_xu_id', $giaoXuId)
+			->orderBy('from_date', 'asc')->get();
+
+		return $linhMucs;
+	}
+
+	public function apiGetLinhMucChanhXuByGiaoXuId($giaoXuId = null)
+	{
+		$linhMuc = LinhmucThuyenchuyen::where(Tables::$linhmuc_thuyenchuyens . '.giao_xu_id', $giaoXuId)
+		->where(Tables::$linhmuc_thuyenchuyens . '.chuc_vu_id', 1)
+		->where(Tables::$linhmuc_thuyenchuyens . '.chuc_vu_active', 1)
+		->orderByDesc('from_date')->get();
+		return $linhMuc;
+	}
+
+	public function apiGetLinhMucPhoXuByGiaoXuId($giaoXuId = null)
+	{
+		$linhMuc = LinhmucThuyenchuyen::where(Tables::$linhmuc_thuyenchuyens . '.giao_xu_id', $giaoXuId)
+			->where(Tables::$linhmuc_thuyenchuyens . '.chuc_vu_id', 4)
+			->where(Tables::$linhmuc_thuyenchuyens . '.chuc_vu_active', 1)
+			->orderByDesc('from_date')->limit(3)
+			->get();
+
+		return $linhMuc;
+	}
+
+	/// LINH MUC
+	private function __apiGetLinhmucs($data = array(), $limit = 15)
+	{
+		$query = DB::table(Tables::$linhmucs)->leftJoin(
+			Tables::$thanhs,
+			Tables::$linhmucs . '.ten_thanh_id',
+			'=',
+			Tables::$thanhs . '.id'
+		)->leftJoin(Tables::$giao_xus, Tables::$linhmucs . '.giao_xu_id', '=', Tables::$giao_xus . '.id')
+			->leftJoin(Tables::$giao_hats, Tables::$giao_xus . '.giao_hat_id', '=', Tables::$giao_hats . '.id')
+			->leftJoin(
+				DB::raw("(select `t1`.`id`, `t1`.`linh_muc_id`, `t1`.`chuc_thanh_id`, `t1`.`ngay_thang_nam_chuc_thanh`
+>>>>>>> 2551e07c153081006ec758d43dca5cb7795ef6a3
 						from `pc_linhmuc_chucthanhs` t1
 						INNER JOIN (
 								SELECT max(`pc_linhmuc_chucthanhs`.`id`) as id

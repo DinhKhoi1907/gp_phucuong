@@ -1065,6 +1065,7 @@ class ApiController extends Controller
           'ten_thanh' => $info->ten_thanh ?? $emptyStr,
           'ngay_nhan_chuc' => $ngayNhanChucThanhHienTai ?? $emptyStr,
           'ngay_rip' => ($info->ngay_rip) ? date_format(date_create($info->ngay_rip), "d-m-Y") : '',
+<<<<<<< HEAD
           'chuc_vu' => $chucVuHienTai ?? $emptyStr,
           'ten_day_du' => $tenChucThanh . ' ' . $info->ten_thanh . ' ' . $info->ten
         ];
@@ -1280,6 +1281,144 @@ class ApiController extends Controller
       'results'                  => $json['results'],
     ]);
   }
+=======
+					'ten_day_du' => $tenChucThanh . ' ' . $info->ten_thanh . ' ' . $info->ten
+				];
+			}
+
+			$json = [
+				'data' => [
+					'results'    => $results,
+					'pagination' => $pagination,
+					'page'       => $page
+				]
+			];
+		} catch (HandlerMsgCommon $e) {
+			$json = [
+				'data' => [
+					'results'    => [],
+					'pagination' => [],
+					'msg'       => $e->render()
+				]
+			];
+		}
+
+		return $this->respondWithCollectionPagination($json);
+	}
+
+	function pClean($str)
+	{
+		// return trim(html_entity_decode($input), " \t\n\r\0\x0B\xC2\xA0");
+		$str = str_replace("&nbsp;", " ", $str);
+		$str = preg_replace('/\s+/', ' ', $str);
+		$str = trim($str);
+		return $str;
+	}
+
+	function replaceAll($str) { 
+		$unicode = array(
+
+			'a'=>'á|à|ả|ã|ạ|ă|ắ|ặ|ằ|ẳ|ẵ|â|ấ|ầ|ẩ|ẫ|ậ',
+
+			'd'=>'đ',
+
+			'e'=>'é|è|ẻ|ẽ|ẹ|ê|ế|ề|ể|ễ|ệ',
+
+			'i'=>'í|ì|ỉ|ĩ|ị',
+
+			'o'=>'ó|ò|ỏ|õ|ọ|ô|ố|ồ|ổ|ỗ|ộ|ơ|ớ|ờ|ở|ỡ|ợ',
+
+			'u'=>'ú|ù|ủ|ũ|ụ|ư|ứ|ừ|ử|ữ|ự',
+
+			'y'=>'ý|ỳ|ỷ|ỹ|ỵ',
+
+			'A'=>'Á|À|Ả|Ã|Ạ|Ă|Ắ|Ặ|Ằ|Ẳ|Ẵ|Â|Ấ|Ầ|Ẩ|Ẫ|Ậ',
+
+			'D'=>'Đ',
+
+			'E'=>'É|È|Ẻ|Ẽ|Ẹ|Ê|Ế|Ề|Ể|Ễ|Ệ',
+
+			'I'=>'Í|Ì|Ỉ|Ĩ|Ị',
+
+			'O'=>'Ó|Ò|Ỏ|Õ|Ọ|Ô|Ố|Ồ|Ổ|Ỗ|Ộ|Ơ|Ớ|Ờ|Ở|Ỡ|Ợ',
+
+			'U'=>'Ú|Ù|Ủ|Ũ|Ụ|Ư|Ứ|Ừ|Ử|Ữ|Ự',
+
+			'Y'=>'Ý|Ỳ|Ỷ|Ỹ|Ỵ',
+
+			);
+
+			foreach($unicode as $nonUnicode=>$uni){
+
+			$str = preg_replace("/($uni)/i", $nonUnicode, $str);
+
+			}
+			$str = strtolower($str);
+			$str = str_replace(',','',$str);
+			$str = str_replace('.','',$str);
+			$str = str_replace(' ','-',$str);
+
+			return $str;
+	}
+
+
+	public function getNgayLeList(Request $request)
+	{
+		$page = 1;
+		if ($request->query('page')) {
+			$page = $request->query('page');
+		}
+		try {
+			$results = [];
+			$collections = $this->sv->apiGetNgayLeList();
+			$pagination = $this->_getTextPagination($collections);
+			foreach ($collections as $key => $info) {
+				$results[] = [
+					'id' => (int) $info->id,
+					'ten_le' => $info->ten_le,
+					'hanh' => strip_tags($this->pClean($info->hanh)),
+					'slug' => $this->replaceAll($info->ten_le),
+					'solar_day' => $info->solar_day,
+					'solar_month' => $info->solar_month,
+				];
+			}
+			$json = [
+				'data' => [
+					'results'    => $results,
+					'pagination' => $pagination,
+					'page'       => $page
+				]
+			];
+		} catch (HandlerMsgCommon $e) {
+			$json = [
+				'data' => [
+					'results'    => [],
+					'pagination' => [],
+					'msg'       => $e->render()
+				]
+			];
+		}
+		return $this->respondWithCollectionPagination($json);
+	}
+	
+	public function getNgayLeDetail(Request $request, $id = null)
+	{
+		$params         = $request->all();
+		$params['slug'] = isset($params['slug']) ? $params['slug'] : '';
+        if (!empty($params['slug'])) {
+            $slugs                    = explode('-', $params['slug']);
+            $params['id'] = end($slugs);
+        }
+
+		if (isset($params['id'])) {
+			$json['results']                  = $this->sv->apiGetDetailNgayLe($params['id']);
+		}
+		
+		return Helper::successResponse([
+            'results'                  => $json['results'],
+        ]);
+	}
+>>>>>>> 2551e07c153081006ec758d43dca5cb7795ef6a3
 
   public function updateLinhMucTemp(Request $request)
   {
